@@ -1,8 +1,10 @@
 package tonder.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import tonder.dto.form.CreateProfileDto;
-import tonder.dto.form.ProfileDto;
+import tonder.dto.profile.CreateProfileDto;
+import tonder.dto.profile.ProfileDto;
+import tonder.service.impl.JpaProfileService;
 
 import java.util.List;
 
@@ -10,19 +12,22 @@ import java.util.List;
 @RequestMapping("/profile")
 public class ProfileController {
 
+    @Autowired
+    JpaProfileService jpaProfileService;
+
     @GetMapping("/get-all")
     public List<ProfileDto> getAllProfiles() {
-        return null;
+        return jpaProfileService.getAllProfiles();
     }
 
     @GetMapping("/get/{id}")
     public ProfileDto getProfileById(@PathVariable(value = "id") Integer id) {
-        return null;
+        return jpaProfileService.getProfileById(id);
     }
 
-    @PostMapping("/create-profile")
+    @PostMapping("/create")
     public void createProfile(@RequestBody CreateProfileDto createProfileDto) {
-
+        jpaProfileService.createProfile(createProfileDto);
     }
 
     @DeleteMapping("/delete/{id}")
