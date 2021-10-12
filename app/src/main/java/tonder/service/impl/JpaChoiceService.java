@@ -1,7 +1,5 @@
 package tonder.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.AccessType;
 import org.springframework.stereotype.Service;
 import tonder.dto.choice.ChoiceDto;
 import tonder.dto.choice.CreateChoiceDto;
@@ -23,24 +21,23 @@ public class JpaChoiceService implements ChoiceService {
     ChoiceFactory       choiceFactory;
     ChoiceMapper        choiceMapper;
 
-    @Autowired
     UserService         userService;
 
-    @Autowired
-    public JpaChoiceService(ChoiceRepository choiceRepository, ChoiceFactory choiceFactory, ChoiceMapper choiceMapper) {
+    public JpaChoiceService(ChoiceRepository choiceRepository, ChoiceFactory choiceFactory, ChoiceMapper choiceMapper, UserService userService) {
         this.choiceRepository = choiceRepository;
         this.choiceFactory = choiceFactory;
         this.choiceMapper = choiceMapper;
+        this.userService = userService;
     }
 
     @Override
-    public Choice addUserChoice(CreateChoiceDto createChoiceDto) {
+    public ChoiceDto addUserChoice(CreateChoiceDto createChoiceDto) {
         Choice choice = choiceFactory.build(createChoiceDto);
         Integer userId = createChoiceDto.getUserId();
 
-        choice.setUser(userService.getUserById(userId));
-        choiceRepository.save(choice);
-        return (choice);
+        choice.setUser(userService.findUserById(userId));
+        choiceRepository.saveAndFlush(choice);
+        return (choiceMapper.mapChoiceToChoiceDto(choice));
     }
 
     @Override

@@ -21,7 +21,6 @@ public class JpaProfileService implements ProfileService {
     ProfileMapper       profileMapper;
     ProfileFactory      profileFactory;
 
-    @Autowired
     public JpaProfileService(ProfileRepository profileRepository, ProfileMapper profileMapper, ProfileFactory profileFactory) {
         this.profileRepository = profileRepository;
         this.profileMapper = profileMapper;

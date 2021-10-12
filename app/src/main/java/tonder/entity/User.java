@@ -36,9 +36,5 @@ public class User {
     @CreationTimestamp
     @Column(name = "created_at")
     private Instant createdAt;
-
-    public void addChoice(Choice choice) {
-        choiceList.add(choice);
-    }
 }
 
