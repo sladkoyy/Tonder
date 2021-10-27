@@ -4,18 +4,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 @Getter
-
 public class CreateChoiceDto {
 
-    final private Integer   profileId;
-    final private Integer   userId;
-    final private Boolean   choice;
+    final private String   requesterId;
+    final private String   adresserId;
 
-    public CreateChoiceDto(@JsonProperty("profileId") Integer profileId,
-                           @JsonProperty("userId") Integer userId,
-                           @JsonProperty("choice") Boolean choice) {
-        this.profileId = profileId;
-        this.userId = userId;
-        this.choice = choice;
+    public CreateChoiceDto(@JsonProperty("requesterId") String requesterId,
+                           @JsonProperty("adresserId") String adresserId) {
+        this.requesterId = requesterId;
+        this.adresserId = adresserId;
     }
 }

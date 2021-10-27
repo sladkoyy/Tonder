@@ -5,17 +5,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 
 import javax.persistence.*;
 import java.time.Instant;
-import java.util.List;
+import java.util.Set;
 
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@NamedEntityGraphs({
+        @NamedEntityGraph(name = "User.roles", attributeNodes = {
+                @NamedAttributeNode(value = "roles")
+        })
+})
 @Entity
 public class User {
+
     @Id
     @SequenceGenerator(name = "user_id_seq_generator", sequenceName = "user_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_seq_generator")
@@ -28,10 +37,14 @@ public class User {
     private String  password;
 
     @OneToOne
+    @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Choice>  choiceList;
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JoinTable(name = "user_role",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id")})
+    private Set<Role> roles;
 
     @CreationTimestamp
     @Column(name = "created_at")

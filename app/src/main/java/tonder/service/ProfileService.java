@@ -1,17 +1,21 @@
 package tonder.service;
 
 import tonder.dto.profile.CreateProfileDto;
+import tonder.dto.profile.EditProfileDto;
 import tonder.dto.profile.ProfileDto;
-import tonder.entity.Profile;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 public interface ProfileService {
+
     List<ProfileDto> getAllProfiles();
 
-    ProfileDto getProfileById(Integer id);
+    ProfileDto getProfileById(String username);
 
-    Profile createProfile(CreateProfileDto profileDto);
+    ProfileDto createProfile(CreateProfileDto profileDto, String username) throws AccessDeniedException;
 
-    void deleteProfile(Integer id);
+    void deleteProfile(String username) throws AccessDeniedException;
+
+    ProfileDto editProfile(String username, EditProfileDto profileEditDto) throws AccessDeniedException;
 }

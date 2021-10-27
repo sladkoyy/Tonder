@@ -1,10 +1,7 @@
 package tonder.service.mapper;
 
 import org.springframework.stereotype.Component;
-import tonder.dto.profile.ProfileDto;
 import tonder.dto.user.UserDto;
-import tonder.entity.Choice;
-import tonder.entity.Profile;
 import tonder.entity.User;
 
 import java.util.Collection;
@@ -27,8 +24,8 @@ public class UserMapper {
                 model.getId(),
                 model.getUsername(),
                 model.getPassword(),
-                model.getChoiceList() != null ? choiceMapper.mapChoiceToChoiceDto(model.getChoiceList()) : null,
-                profileMapper.mapProfileToProfileDto(model.getProfile()),
+                model.getRoles(),
+                model.getProfile() == null ? null : profileMapper.mapProfileToProfileDto(model.getProfile()),
                 model.getCreatedAt()
         );
     }

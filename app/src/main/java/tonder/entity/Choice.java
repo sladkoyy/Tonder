@@ -4,10 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.time.Instant;
 
 @Setter
 @Getter
@@ -16,21 +14,15 @@ import java.time.Instant;
 @Entity
 public class Choice {
     @Id
-    @SequenceGenerator(name = "choice_id_seq_generator", sequenceName = "choice_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "choice_id_seq_generator")
+    @SequenceGenerator(name = "choice_seq_generator", sequenceName = "choice_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "choice_seq_generator")
     private Integer id;
 
-    @Column(name = "profile_id")
-    private Integer profileId;
-
-    @Column(name = "choice")
-    private Boolean choice;
-
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User    user;
+    @JoinColumn(name = "requester_id")
+    private Profile requester;
 
-    @CreationTimestamp
-    @Column(name = "created_at")
-    private Instant createdAt;
+    @OneToOne
+    @JoinColumn(name = "adresser_id")
+    private Profile adresser;
 }

@@ -12,16 +12,18 @@ import java.util.stream.Collectors;
 public class ChoiceMapper {
 
     public ChoiceDto mapChoiceToChoiceDto(Choice model) {
+        if (model == null)
+            return null;
         return new ChoiceDto(
                 model.getId(),
-                model.getProfileId(),
-                model.getChoice(),
-                model.getUser().getId(),
-                model.getCreatedAt()
+                model.getRequester().getUser().getUsername(),
+                model.getAdresser().getUser().getUsername()
         );
     }
 
     public List<ChoiceDto> mapChoiceToChoiceDto(Collection<Choice> model) {
+        if (model == null)
+            return null;
         return model.stream()
                 .map(this::mapChoiceToChoiceDto)
                 .collect(Collectors.toList());

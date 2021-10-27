@@ -2,12 +2,12 @@ package tonder.service.impl;
 
 import org.springframework.stereotype.Service;
 import tonder.dto.choice.ChoiceDto;
-import tonder.dto.choice.CreateChoiceDto;
 import tonder.entity.Choice;
+import tonder.entity.Profile;
+import tonder.entity.User;
 import tonder.repository.ChoiceRepository;
+import tonder.repository.UserRepository;
 import tonder.service.ChoiceService;
-import tonder.service.UserService;
-import tonder.service.factory.ChoiceFactory;
 import tonder.service.mapper.ChoiceMapper;
 
 import javax.transaction.Transactional;
@@ -17,33 +17,49 @@ import java.util.List;
 @Service
 public class JpaChoiceService implements ChoiceService {
 
-    ChoiceRepository    choiceRepository;
-    ChoiceFactory       choiceFactory;
-    ChoiceMapper        choiceMapper;
+    private final ChoiceRepository    choiceRepository;
+    private final ChoiceMapper        choiceMapper;
 
-    UserService         userService;
+    private final UserRepository      userRepository;
 
-    public JpaChoiceService(ChoiceRepository choiceRepository, ChoiceFactory choiceFactory, ChoiceMapper choiceMapper, UserService userService) {
+    public JpaChoiceService(ChoiceRepository choiceRepository, ChoiceMapper choiceMapper,
+                            UserRepository userRepository) {
         this.choiceRepository = choiceRepository;
-        this.choiceFactory = choiceFactory;
         this.choiceMapper = choiceMapper;
-        this.userService = userService;
-    }
-
-    @Override
-    public ChoiceDto addUserChoice(CreateChoiceDto createChoiceDto) {
-        Choice choice = choiceFactory.build(createChoiceDto);
-        Integer userId = createChoiceDto.getUserId();
-
-        choice.setUser(userService.findUserById(userId));
-        choiceRepository.saveAndFlush(choice);
-        return (choiceMapper.mapChoiceToChoiceDto(choice));
+        this.userRepository = userRepository;
     }
 
     @Override
     public List<ChoiceDto> getAllChoices() {
-        List<Choice> choiceList = choiceRepository.findAll();
+        return choiceMapper.mapChoiceToChoiceDto(choiceRepository.findAll());
+    }
 
-        return choiceMapper.mapChoiceToChoiceDto(choiceList);
+    @Transactional
+    @Override
+    public void like(String requester, String adresser) {
+        Choice choice = new Choice();
+
+        User reqUser = userRepository.findOneWithRolesByUsername(requester).orElseThrow();
+        User adrUser = userRepository.findOneWithRolesByUsername(adresser).orElseThrow();
+
+        choice.setRequester(reqUser.getProfile());
+        choice.setAdresser(adrUser.getProfile());
+
+        choiceRepository.save(choice);
+    }
+
+    @Override
+    public Boolean isLikesYou(String requester, String adresser) {
+        Profile req = userRepository.findOneWithRolesByUsername(requester).orElseThrow().getProfile();
+        Profile adr = userRepository.findOneWithRolesByUsername(adresser).orElseThrow().getProfile();
+
+        List<Choice> adrChoices = adr.getChoices();
+
+        for (Choice adrChoice : adrChoices) {
+            if (adrChoice.getAdresser().getId().equals(req.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

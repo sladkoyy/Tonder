@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.time.Instant;
+import java.util.List;
+
 
 @Setter
 @Getter
@@ -19,6 +19,12 @@ public class Profile {
     @SequenceGenerator(name = "profile_id_seq_generator", sequenceName = "profile_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "profile_id_seq_generator")
     private Integer id;
+
+    @OneToOne(mappedBy = "profile")
+    private User    user;
+
+    @OneToMany(mappedBy = "requester")
+    private List<Choice> choices;
 
     @Column(name = "first_name")
     private String  firstName;
@@ -34,8 +40,4 @@ public class Profile {
 
     @Column(name = "info")
     private String  info;
-
-    @Column(name = "created_at")
-    @CreationTimestamp
-    private Instant createdAt;
 }

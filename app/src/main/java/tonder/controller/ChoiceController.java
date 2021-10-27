@@ -1,29 +1,37 @@
 package tonder.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tonder.dto.choice.ChoiceDto;
-import tonder.dto.choice.CreateChoiceDto;
-import tonder.service.impl.JpaChoiceService;
+import tonder.service.ChoiceService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/choice")
+@RequestMapping("/user/profile/like")
 public class ChoiceController {
 
-    JpaChoiceService jpaChoiceService;
+    private final ChoiceService choiceService;
 
-    public ChoiceController(JpaChoiceService jpaChoiceService) {
-        this.jpaChoiceService = jpaChoiceService;
+    public ChoiceController(ChoiceService choiceService) {
+        this.choiceService = choiceService;
     }
 
-    @GetMapping("/get-all")
-    List<ChoiceDto> getAllChoices() {
-        return jpaChoiceService.getAllChoices();
+    @PreAuthorize("hasRole('admin')")
+    @GetMapping("/all")
+    public List<ChoiceDto> getAllChoices() {
+        return choiceService.getAllChoices();
     }
 
-    @PostMapping("/add-choice")
-    public ChoiceDto addUserChoice(@RequestBody CreateChoiceDto createChoiceDto) {
-        return jpaChoiceService.addUserChoice(createChoiceDto);
+    @PostMapping("/{requester}/to/{adresser}")
+    public void like(@PathVariable String requester,
+                     @PathVariable String adresser) {
+        choiceService.like(requester, adresser);
+    }
+
+    @GetMapping("/{requester}/to/{adresser}")
+    public Boolean isLikesYou(@PathVariable String requester,
+                              @PathVariable String adresser) {
+        return choiceService.isLikesYou(requester, adresser);
     }
 }
