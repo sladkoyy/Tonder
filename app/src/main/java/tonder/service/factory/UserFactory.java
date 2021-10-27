@@ -1,6 +1,5 @@
 package tonder.service.factory;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 import tonder.dto.user.CreateUserDto;
 import tonder.entity.User;
@@ -11,7 +10,8 @@ public class UserFactory {
     public User build(CreateUserDto userDto) {
         User user = new User();
 
-        BeanUtils.copyProperties(userDto, user);
+        user.setUsername(userDto.getUsername());
+        user.setPassword(userDto.getPassword());
 
         return user;
     }

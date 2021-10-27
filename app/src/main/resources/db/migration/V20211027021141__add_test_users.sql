@@ -1,11 +1,11 @@
 insert into tonder.profile
-values (1, 'Admin', 'Profile', '20', 'm', 'Красивый адмен'),
-       (2, 'User', 'Profile', '16', 'f', 'Красивый юзер');
+values (nextval('tonder.profile_id_seq'), 'Admin', 'Profile', '20', 'm', 'Красивый адмен'),
+       (nextval('tonder.profile_id_seq'), 'User', 'Profile', '16', 'f', 'Красивый юзер');
 
 insert into tonder.user
-values (1, 'admin', 'admin', 1),
-       (2, 'user', 'user', 2);
+values (nextval('tonder.user_id_seq'), 'admin', 'admin', 1),
+       (nextval('tonder.user_id_seq'), 'user', 'user', 2);
 
 insert into tonder.user_role
-values (1, 1, 1),
-       (2, 2, 2);
+values (nextval('tonder.user_role_id_seq'), 1, 1),
+       (nextval('tonder.user_role_id_seq'), 2, 2);
