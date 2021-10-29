@@ -1,32 +1,51 @@
 package tonder.controller;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import tonder.dto.form.CreateProfileDto;
-import tonder.dto.form.ProfileDto;
+import tonder.dto.choice.ChoiceDto;
+import tonder.dto.profile.CreateProfileDto;
+import tonder.dto.profile.EditProfileDto;
+import tonder.dto.profile.ProfileDto;
+import tonder.service.ProfileService;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/profile")
+@RequestMapping("/user/profile")
 public class ProfileController {
 
-    @GetMapping("/get-all")
+    private final ProfileService profileService;
+
+    public ProfileController(ProfileService profileService) {
+        this.profileService = profileService;
+    }
+
+    @GetMapping("/all")
     public List<ProfileDto> getAllProfiles() {
-        return null;
+        return profileService.getAllProfiles();
     }
 
-    @GetMapping("/get/{id}")
-    public ProfileDto getProfileById(@PathVariable(value = "id") Integer id) {
-        return null;
+    @GetMapping("/{username}")
+    public ProfileDto getProfile(@PathVariable String username) {
+        return profileService.getProfileById(username);
     }
 
-    @PostMapping("/create-profile")
-    public void createProfile(@RequestBody CreateProfileDto createProfileDto) {
-
+    @PostMapping("/{username}/create")
+    public ProfileDto createProfile(@RequestBody CreateProfileDto profileDto,
+                                    @PathVariable String username) throws AccessDeniedException {
+        SecurityContextHolder.getContext().getAuthentication().getName();
+        return profileService.createProfile(profileDto, username);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void deleteProfileById(@PathVariable(value = "id") Integer id) {
-        //todo удалить анкету из БД
+    @PutMapping("/{username}/update")
+    public ProfileDto editProfile(@PathVariable String username,
+                                  @RequestBody EditProfileDto editProfileDto) throws AccessDeniedException {
+        return profileService.editProfile(username, editProfileDto);
+    }
+
+    @DeleteMapping("/{username}/delete")
+    public void deleteProfile(@PathVariable String username) throws AccessDeniedException {
+        profileService.deleteProfile(username);
     }
 }

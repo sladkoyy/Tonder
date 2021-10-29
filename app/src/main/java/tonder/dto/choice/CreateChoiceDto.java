@@ -1,14 +1,17 @@
 package tonder.dto.choice;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
-import java.time.Instant;
-
 @Getter
-@AllArgsConstructor
 public class CreateChoiceDto {
 
-    private final String    username;
-    private final Instant   createdAt;
+    final private String   requesterId;
+    final private String   adresserId;
+
+    public CreateChoiceDto(@JsonProperty("requesterId") String requesterId,
+                           @JsonProperty("adresserId") String adresserId) {
+        this.requesterId = requesterId;
+        this.adresserId = adresserId;
+    }
 }
